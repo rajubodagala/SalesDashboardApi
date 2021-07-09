@@ -1,0 +1,6 @@
+{
+  "jwtPrivateKey": "unsecureKey",
+  "jwtRefreshPrivateKey": "refrsdgfhfsdeshunsecuredfsdkey",
+  "tokenLife": "9999m",
+  "tokenEncryptionKey": "E(H+MbQeThWmZq4t7w!z%C&F)J@NcRfUfghgfhjXn2r5u8x/A?D(G-KaPdSgVkYp3s6v9y"
+}
