@@ -9,11 +9,11 @@ const router = express.Router();
 
 var authRouter = require('./routes/auth');
 
-var corsOptions = {
-    origin: 'http://localhost:3000',
-    optionsSuccessStatus: 200, // For legacy browser support
-    methods: "GET, POST"
-}
+// var corsOptions = {
+//     origin: 'http://localhost:3000',
+//     optionsSuccessStatus: 200, // For legacy browser support
+//     methods: "GET, POST"
+// }
 
 // var whitelist = ['http://localhost:3000']
 // var corsOptions = {
@@ -31,7 +31,7 @@ app.use(bodyParser.json())
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
 app.use("/", authRouter);
 
