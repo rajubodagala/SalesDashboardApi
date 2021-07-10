@@ -89,16 +89,7 @@ let sql ='SELECT * FROM users where Password = md5('+ mysql.escape(req.body.pass
     });
 });
 router.post("/api/transactions", async (req, res) => {
-    // let sql = 'SELECT 1 as ID, u.username, sum(t.qunatity) as Units,sum(t.billed) as Billed,'+
-    // 'sum(t.green) as Green,sum(t.yellow) as Yellow,sum(red) as Red,  sum(t.qunatity*t.rate) as BGYR,'+ 
-    // 'sum(t.billed*t.rate)as pBilled,sum(t.green*t.rate)as pGreen,sum(t.yellow*t.rate) as pYellow,'+
-    // 'sum(t.red*t.rate) as pRed from transactions t join users u on u.userid=t.userid'+
-    // ' join items i on i.itemid=t.itemid'+
-    // ' join customer c on c.customerid=t.customerid'+
-    // ' where u.path like "'+ userPath + '" group by t.userid';
-
     let today = new Date(req.body.saleDate).toISOString().slice(0, 10)
-console.log(req.body.path)
     dbConn.query('CALL sp_transactions(?,?)',[req.body.path,today], function (err, rows) {
         if (err) {
             res.status(400).json({
@@ -115,6 +106,62 @@ console.log(req.body.path)
         }
     });
 });
+router.get("/api/customer", async (req, res) => {
+    dbConn.query('select * from customer order by customername', function (err, rows) {
+        if (err) {
+            res.status(400).json({
+                success: false,
+                responseCode: 400,
+                msg: err
+            });
+        } else {           
+                res.status(200).json({
+                    success: true,
+                    responseCode: 200,
+                    result:  rows 
+                });
+        }
+    });
+});
+router.get("/api/item", async (req, res) => {
+    dbConn.query('select * from items order by itemname', function (err, rows) {
+        if (err) {
+            res.status(400).json({
+                success: false,
+                responseCode: 400,
+                msg: err
+            });
+        } else {           
+                res.status(200).json({
+                    success: true,
+                    responseCode: 200,
+                    result:  rows 
+                });
+        }
+    });
+});
+router.post("/api/register/:regid", async (req, res) => {
+    var oldDateObj = new Date(req.body.saledate);
+var newDateObj = new Date(req.body.saledate);
+newDateObj.setTime(oldDateObj.getTime() + (30 * 60 * 1000));
 
+    let today = new Date(newDateObj).toISOString().slice(0, 19).replace('T', ' ');
+    console.log(today);
+    dbConn.query('INSERT INTO transactions (UserId, ItemId, CustomerId,Qunatity,Rate,Billed,Green,Yellow,Red,TransactionDate)'+'VALUES ("'+req.params.regid+'", "'+req.body.item+'", "'+req.body.customer+'","'+req.body.quantity+'","'+req.body.rate+'","'+req.body.billed+'","'+req.body.green+'","'+req.body.yellow+'","'+req.body.red+'","'+today+'")', function (err, rows) {
+        if (err) {
+            res.status(400).json({
+                success: false,
+                responseCode: 400,
+                msg: err
+            });
+        } else {           
+                res.status(200).json({
+                    success: true,
+                    responseCode: 200,
+                    result:  rows 
+                });
+        }
+    });
+});
 module.exports = router;
 
